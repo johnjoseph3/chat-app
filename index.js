@@ -1,8 +1,10 @@
 const app = require('express')();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
+const uuidv1 = require('uuid/v1');
 
 const people = {};
+const sessions = {}
 
 app.get('*', function(req, res){
   res.sendFile(__dirname + '/index.html');
@@ -12,17 +14,21 @@ io.on('connection', function(socket){
   socket.on('join', function(name, pw){
     name = name.toLowerCase();
     if (!people[name]) {
+      const sessionId = uuidv1();
+      sessions[sessionId] = name;
       people[name] = pw;
-      socket.emit('logIn', 'Login Success', name);
+      socket.emit('logIn', 'Login Success', sessionId);
     } else if (people[name] && people[name] === pw) {
-      socket.emit('logIn', 'Login Success', name);
+      const sessionId = uuidv1();
+      this.sessions[sessionId] = name;
+      socket.emit('logIn', 'Login Success');
     } else {
-      socket.emit('logIn', 'Login Failure');
+      socket.emit('logIn', 'Login Failure', sessionId);
     }
 	});
 
-  socket.on('chatMessage', function(msg, name, color){
-    io.emit('chatMessage', name, msg, color);
+  socket.on('chatMessage', function(msg, sessionId, color){
+    io.emit('chatMessage', sessions[sessionId], msg, color);
   });
 });
 
