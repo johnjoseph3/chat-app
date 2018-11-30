@@ -21,8 +21,8 @@ io.on('connection', function(socket){
     }
 	});
 
-  socket.on('chatMessage', function(msg, name){
-    io.emit('chatMessage', name, msg);
+  socket.on('chatMessage', function(msg, name, color){
+    io.emit('chatMessage', name, msg, color);
   });
 });
 
