@@ -10,6 +10,7 @@ app.get('*', function(req, res){
 
 io.on('connection', function(socket){
   socket.on('join', function(name, pw){
+    name = name.toLowerCase();
     if (!people[name]) {
       people[name] = pw;
       socket.emit('logIn', 'Login Success', name);
