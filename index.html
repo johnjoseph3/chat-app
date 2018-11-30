@@ -19,15 +19,13 @@
   <script>
     var socket = io();
     $(function () {
-      var name;
-      var signedInName;
       var socket = io();
       $('#signIn').submit(function(){
         socket.emit('join', $('#signInUser').val(), $('#signInPw').val());
         return false;
       });
       $('#message').submit(function(){
-        socket.emit('chatMessage', $('#m').val(), signedInName);
+        socket.emit('chatMessage', $('#m').val(), sessionStorage.getItem('sessionId'));
         $('#m').val('');
         return false;
       });
@@ -35,9 +33,9 @@
         $("#messages").append("<li><strong><span class='text-success'>" + who + "</span></strong> says: " + msg + "</li>");
       });
 
-      socket.on('logIn', function(msg, name){
+      socket.on('logIn', function(msg, sessionId){
         if(msg === 'Login Success') {
-          signedInName = name;
+          sessionStorage.setItem('sessionId', sessionId);
           $('#signIn').hide();
           $('#message').show();
           $('#loginFailure').hide();
