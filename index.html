@@ -13,7 +13,7 @@
       #messages li:nth-child(odd) { background: #eee; }
     </style>
   </head>
-  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
   <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
   <script>
     var socket = io();
@@ -24,7 +24,7 @@
         socket.emit('join', $('#l').val());
         $('#l').val('');
         $('#login').hide();
-        $('#message').show();
+        $('#messages').show();
         return false;
       });
       $('#message').submit(function(){

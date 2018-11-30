@@ -4,7 +4,7 @@ const io = require('socket.io')(http);
 
 const people = {};
 
-app.get('/', function(req, res){
+app.get('*', function(req, res){
   res.sendFile(__dirname + '/index.html');
 });
 
@@ -18,6 +18,6 @@ io.on('connection', function(socket){
   });
 });
 
-http.listen(3000, function(){
-  console.log('listening on *:3000');
+http.listen(8000, function(){
+  console.log('listening on *:8000');
 });
