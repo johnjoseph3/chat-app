@@ -27,8 +27,8 @@ io.on('connection', function(socket){
     }
 	});
 
-  socket.on('chatMessage', function(msg, sessionId){
-    io.emit('chatMessage', sessions[sessionId], msg);
+  socket.on('chatMessage', function(msg, sessionId, color){
+    io.emit('chatMessage', sessions[sessionId], msg, color);
   });
 });
 
