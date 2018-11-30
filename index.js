@@ -9,12 +9,19 @@ app.get('*', function(req, res){
 });
 
 io.on('connection', function(socket){
-  socket.on('join', function(name){
-    people[socket.id] = name;
+  socket.on('join', function(name, pw){
+    if (!people[name]) {
+      people[name] = pw;
+      socket.emit('logIn', 'Login Success', name);
+    } else if (people[name] && people[name] === pw) {
+      socket.emit('logIn', 'Login Success', name);
+    } else {
+      socket.emit('logIn', 'Login Failure');
+    }
 	});
 
-  socket.on('chat message', function(msg){
-    io.emit('chat message', people[socket.id], msg);
+  socket.on('chatMessage', function(msg, name){
+    io.emit('chatMessage', name, msg);
   });
 });
 

@@ -5,6 +5,7 @@
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
       body { font: 13px Helvetica, Arial; }
+      #signUp, #loginFailure { display: none; color: red; }
       #message { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; display: none; }
       #message input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
       #message button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
@@ -18,33 +19,47 @@
   <script>
     var socket = io();
     $(function () {
-      var name 
+      var name;
+      var signedInName;
       var socket = io();
-      $('#login').submit(function(){
-        socket.emit('join', $('#l').val());
-        $('#l').val('');
-        $('#login').hide();
-        $('#message').show();
+      $('#signIn').submit(function(){
+        socket.emit('join', $('#signInUser').val(), $('#signInPw').val());
         return false;
       });
       $('#message').submit(function(){
-        socket.emit('chat message', $('#m').val());
+        socket.emit('chatMessage', $('#m').val(), signedInName);
         $('#m').val('');
         return false;
       });
-      socket.on('chat message', function(who, msg){
-          $("#messages").append("<li><strong><span class='text-success'>" + who + "</span></strong> says: " + msg + "</li>");
+      socket.on('chatMessage', function(who, msg){
+        $("#messages").append("<li><strong><span class='text-success'>" + who + "</span></strong> says: " + msg + "</li>");
       });
+
+      socket.on('logIn', function(msg, name){
+        if(msg === 'Login Success') {
+          signedInName = name;
+          $('#signIn').hide();
+          $('#message').show();
+          $('#loginFailure').hide();
+        } else {
+          $('#loginFailure').show();
+        }
+      });
+
     });
   </script>
   <body>
     <ul id="messages"></ul>
-    <form id="login" action="">
-      <h1>Login</h1>
-      <input id="l" autocomplete="off" /><button>Send</button>
+    <p id="loginFailure">Login Failure</p>
+    <form id="signIn" action="">
+      <h1>Sign In</h1>
+      <input id="signInUser" autocomplete="off" />
+      <input id="signInPw" type="password" autocomplete="off" />
+      <button>Send</button>
     </form>
     <form id="message" action="">
-      <input id="m" autocomplete="off" /><button>Send</button>
+      <input id="m" autocomplete="off" />
+      <button>Send</button>
     </form>
   </body>
 </html>
